@@ -1,17 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { appendFileSync, mkdirSync } from 'fs'
-import { join } from 'path'
 
-// Persists signups to a local CSV file and optionally notifies via email.
-// Production would swap this for a DB write + transactional email service.
-
-const SIGNUP_FILE = join(process.cwd(), 'data', 'waitlist.csv')
-
-function persistSignup(email: string) {
-  mkdirSync(join(process.cwd(), 'data'), { recursive: true })
-  const line = `${new Date().toISOString()},${email}\n`
-  appendFileSync(SIGNUP_FILE, line, 'utf8')
-}
+// Edge runtime required for Cloudflare Pages compatibility.
+// Signups are notified via email only — no filesystem persistence on the edge.
+export const runtime = 'edge'
 
 async function notifyBoard(email: string) {
   const apiKey = process.env.MAILEROO_API_KEY
@@ -45,8 +36,6 @@ export async function POST(req: NextRequest) {
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ error: 'Please provide a valid email address.' }, { status: 422 })
   }
-
-  persistSignup(email)
 
   // Fire-and-forget notification — don't block the response
   notifyBoard(email).catch(err => console.error('[waitlist] notify failed:', err))

@@ -1,7 +1,12 @@
+const { setupDevPlatform } = process.env.NODE_ENV === 'development'
+  ? require('@cloudflare/next-on-pages/next-dev')
+  : { setupDevPlatform: async () => {} }
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
+    unoptimized: true,
   },
   // Feature flags are injected via env vars — see .env.local
   env: {
