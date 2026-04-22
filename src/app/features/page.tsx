@@ -1,10 +1,20 @@
+'use client';
+
+import { useEffect } from 'react';
 import { flags } from '@/lib/flags'
 import WaitlistForm from '@/components/WaitlistForm'
+import Nav from '@/components/Nav'
+import Footer from '@/components/Footer'
+import { SiSlack, SiJira } from 'react-icons/si';
+import { LuLayers, LuWebhook, LuPlug, LuPin } from 'react-icons/lu';
 
 const coreFeatures = [
   {
     title: 'Triage inbox, not a feed',
     body: 'Review only matched changes with confidence, owner, and evidence. Approve, merge duplicates, suppress, or snooze in one flow.',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11"/><path d="m7 8 5 3 5-3"/><path d="m16 19 2 2 4-4"/></svg>
+    ),
     details: [
       'Prioritized queue sorted by severity and repo impact',
       'One-click actions: approve, merge similar, suppress, or snooze',
@@ -15,6 +25,9 @@ const coreFeatures = [
   {
     title: 'Code-aware matching',
     body: 'We map vendor changes directly to affected files and CODEOWNERS instead of sending generic change notifications.',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+    ),
     details: [
       'File-level evidence showing which files reference vendor APIs',
       'CODEOWNERS routing for automatic assignment',
@@ -25,6 +38,9 @@ const coreFeatures = [
   {
     title: 'Policy-driven automation',
     body: 'Auto-create tickets for high-confidence breaking changes while routing low-confidence notices into human review.',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+    ),
     details: [
       'Configurable thresholds for auto-creation vs. triage',
       'Severity scoring with confidence percentages',
@@ -35,6 +51,9 @@ const coreFeatures = [
   {
     title: 'Least privilege by default',
     body: 'GitHub App access stays read-only for source and metadata, with explicit destination permissions for ticket creation.',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    ),
     details: [
       'Read-only contents and metadata by default',
       'Ticket creation only when GitHub Issues enabled',
@@ -48,26 +67,32 @@ const advancedFeatures = [
   {
     title: 'Multi-repo intelligence',
     body: 'Connect multiple repositories and see cross-repo impact from a single vendor change.',
+    Icon: LuLayers
   },
   {
     title: 'Slack integration',
     body: 'Real-time alerts to Slack channels with action buttons to approve or snooze without context-switching.',
+    Icon: SiSlack
   },
   {
     title: 'Jira native',
     body: 'Create Jira issues directly with custom fields for severity, due dates, and component mapping.',
+    Icon: SiJira
   },
   {
     title: 'Webhook exports',
     body: 'Forward webhooks to your internal systems for custom ticket workflows beyond Jira and GitHub.',
+    Icon: LuWebhook
   },
   {
     title: 'Custom connectors',
     body: 'Enterprise plans include custom API connectors for internal or niche vendors not in our catalog.',
+    Icon: LuPlug
   },
   {
     title: 'Version pinning',
     body: 'Track specific API versions or deprecate old versions when vendors release updates.',
+    Icon: LuPin
   },
 ]
 
@@ -102,377 +127,137 @@ const faqs = [
 ]
 
 export default function FeaturesPage() {
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <main className="site">
-      <nav className="top-nav">
-        <a href="/" className="brand">Vendor Pulse</a>
-        <div className="nav-links">
-          <a href="/#how">How it works</a>
-          <a href="/features" className="current">Features</a>
-          <a href="/pricing">Pricing</a>
-          <a href="/integrations">Integrations</a>
-          <a href="/blog">Blog</a>
-        </div>
-      </nav>
+    <>
+      <Nav />
+      <main className="wrap">
+        <section className="hero reveal">
+          <div className="hero-aurora" />
+          <div className="hero-grid" />
+          <div className="hero-eyebrow">
+            <span className="tag">New</span>
+            <span className="sep" />
+            <span>Platform Capabilities</span>
+          </div>
+          <h1 className="hero-title">
+            The complete solution for vendor API <span className="serif">risk.</span>
+          </h1>
+          <p className="hero-sub">
+            From ingest to actionable ticket, every step is designed to minimize noise and maximize action.
+          </p>
+        </section>
 
-      <section className="hero">
-        <p className="eyebrow">Features</p>
-        <h1>The complete solution for vendor API risk.</h1>
-        <p className="hero-copy">
-          From ingest to actionable ticket, every step is designed to minimize noise and maximize action.
-        </p>
-      </section>
+        <section className="row reveal">
+          <div className="stat-band">
+            {metrics.map((metric) => (
+              <div className="stat-item" key={metric.label}>
+                <div className="v">{metric.value}</div>
+                <div className="l">{metric.label}</div>
+              </div>
+            ))}
+          </div>
+        </section>
 
-      <section className="section core-features">
-        <p className="eyebrow">Core capabilities</p>
-        <h2>Built for engineering teams who ship.</h2>
-        <div className="feature-grid">
-          {coreFeatures.map((feature) => (
-            <article key={feature.title}>
-              <h3>{feature.title}</h3>
-              <p className="feature-body">{feature.body}</p>
-              <ul>
-                {(feature.details || []).map((detail) => (
-                  <li key={detail}>{detail}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
+        <section className="row reveal">
+          <div className="section-intro">
+            <span className="section-label">Core capabilities</span>
+            <h2>Built for engineering teams who ship.</h2>
+            <p>We've automated the tedious parts of vendor management so you can focus on code.</p>
+          </div>
+          
+          <div className="feat-grid">
+            {coreFeatures.map((feature) => (
+              <div className="feat reveal" key={feature.title}>
+                <div className="icon-box">
+                  {feature.icon}
+                </div>
+                <h3>{feature.title}</h3>
+                <p>{feature.body}</p>
+                <ul style={{ marginTop: '20px', paddingLeft: '0', listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {(feature.details || []).map((detail) => (
+                    <li key={detail} style={{ fontSize: '13px', color: 'var(--mute)', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                      <span style={{ color: 'var(--accent-2)', marginTop: '2px' }}>✓</span>
+                      {detail}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
 
-      <section className="section metrics">
-        <p className="eyebrow">How we measure up</p>
-        <h2>Built to ship, not to debug.</h2>
-        <div className="metrics-grid">
-          {metrics.map((metric) => (
-            <article key={metric.label}>
-              <h3>{metric.value}</h3>
-              <p>{metric.label}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+        <section className="row reveal">
+          <div className="quote-card">
+            <blockquote>"Vendor Pulse turned our 40-hour Shopify Scripts audit into a 15-minute verification. It's the first tool that actually understands our code."</blockquote>
+            <div className="quote-attr">
+              <div className="ava" />
+              <div>
+                <strong>Sarah Chen</strong>
+                <span>Head of Platform, CommerceOS</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
-      <section className="section advanced">
-        <p className="eyebrow">More features</p>
-        <h2>Everything you need to scale.</h2>
-        <div className="advanced-grid">
-          {advancedFeatures.map((feature) => (
-            <article key={feature.title}>
-              <h3>{feature.title}</h3>
-              <p>{feature.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+        <section className="row reveal">
+          <div className="section-intro">
+            <span className="section-label">More features</span>
+            <h2>Everything you need to scale.</h2>
+          </div>
+          <div className="feat-grid">
+            {advancedFeatures.map((feature) => (
+              <div className="feat reveal" key={feature.title}>
+                <div className="icon-box">
+                  <feature.Icon size={20} />
+                </div>
+                <h3>{feature.title}</h3>
+                <p>{feature.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
-      <section className="section faq-section">
-        <p className="eyebrow">Questions answered</p>
-        <h2>The practical details that matter.</h2>
-        <div className="faq-list">
-          {faqs.map((item) => (
-            <details key={item.q}>
-              <summary>{item.q}</summary>
-              <p>{item.a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
+        <section className="row reveal">
+          <div className="section-intro">
+            <span className="section-label">FAQ</span>
+            <h2>The practical details that matter.</h2>
+          </div>
+          <div className="faq">
+            {faqs.map((item) => (
+              <details className="q" key={item.q}>
+                <summary>
+                  {item.q}
+                  <span className="plus">+</span>
+                </summary>
+                <div className="a">{item.a}</div>
+              </details>
+            ))}
+          </div>
+        </section>
 
-      <section className="not-sure">
-        <h2>Ready to see it in action?</h2>
-        <p>Connect one repo and two vendors to draft your first ticket in minutes.</p>
-        {flags.waitlist ? <WaitlistForm /> : <a href="#top" className="btn primary">Start watching free</a>}
-      </section>
-
-      <style>{`
-        :global(*) { box-sizing: border-box; }
-        :global(body) {
-          margin: 0;
-          font-family: 'Space Grotesk', 'Avenir Next', 'Segoe UI', sans-serif;
-          background:
-            radial-gradient(circle at 20% -10%, rgba(249, 115, 22, 0.24), transparent 48%),
-            radial-gradient(circle at 88% 8%, rgba(20, 184, 166, 0.2), transparent 45%),
-            #081018;
-          color: #ecf2ff;
-        }
-
-        .site {
-          width: min(1160px, calc(100% - 3rem));
-          margin: 0 auto;
-          padding: 1.5rem 0 5rem;
-        }
-
-        .top-nav {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 1rem;
-          padding: 0.85rem 1rem;
-          border: 1px solid rgba(143, 165, 192, 0.25);
-          border-radius: 999px;
-          background: rgba(7, 19, 34, 0.72);
-          backdrop-filter: blur(6px);
-          position: sticky;
-          top: 1rem;
-          z-index: 10;
-        }
-
-        .brand {
-          color: #ecf2ff;
-          text-decoration: none;
-          font-weight: 700;
-          letter-spacing: 0.03em;
-        }
-
-        .nav-links { display: flex; gap: 1rem; flex-wrap: wrap; }
-        .nav-links a {
-          color: #b5c5db;
-          text-decoration: none;
-          font-size: 0.95rem;
-        }
-
-        .nav-links a.current {
-          color: #8de8d5;
-        }
-
-        .hero {
-          margin-top: 2rem;
-          border: 1px solid rgba(143, 165, 192, 0.25);
-          border-radius: 28px;
-          background: linear-gradient(150deg, rgba(13, 29, 49, 0.95), rgba(7, 16, 24, 0.86));
-          padding: 3rem;
-          box-shadow: 0 35px 80px rgba(1, 7, 16, 0.5);
-        }
-
-        .eyebrow {
-          margin: 0;
-          color: #8de8d5;
-          text-transform: uppercase;
-          font-size: 0.75rem;
-          letter-spacing: 0.13em;
-          font-weight: 700;
-        }
-
-        h1 {
-          margin: 1rem 0 1rem;
-          font-size: clamp(2rem, 5.3vw, 3.8rem);
-          line-height: 1.02;
-          max-width: 18ch;
-        }
-
-        .hero-copy {
-          color: #b5c5db;
-          font-size: 1.08rem;
-          line-height: 1.7;
-          max-width: 60ch;
-          margin: 0;
-        }
-
-        .section { margin-top: 4rem; }
-
-        .section h2 {
-          margin: 0.6rem 0 1.5rem;
-          font-size: clamp(1.6rem, 4.2vw, 2.4rem);
-          max-width: 22ch;
-          line-height: 1.12;
-        }
-
-        .feature-grid {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 1rem;
-        }
-
-        .core-features article,
-        .advanced article {
-          border: 1px solid rgba(143, 165, 192, 0.25);
-          border-radius: 20px;
-          padding: 1.5rem;
-          background: rgba(9, 23, 40, 0.62);
-        }
-
-        .core-features h3,
-        .advanced h3 {
-          margin: 0 0 0.75rem;
-          font-size: 1.15rem;
-          color: #ecf2ff;
-        }
-
-        .feature-body {
-          color: #b5c5db;
-          font-size: 1rem;
-          line-height: 1.6;
-          margin: 0 0 1rem;
-        }
-
-        .core-features ul {
-          margin: 0;
-          padding-left: 1.2rem;
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-
-        .core-features li {
-          color: #b5c5db;
-          font-size: 0.9rem;
-          line-height: 1.5;
-        }
-
-        .metrics-grid {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 1rem;
-        }
-
-        .metrics article {
-          border: 1px solid rgba(143, 165, 192, 0.25);
-          border-radius: 18px;
-          padding: 1.25rem;
-          background: rgba(9, 23, 40, 0.62);
-          text-align: center;
-        }
-
-        .metrics h3 {
-          margin: 0 0 0.45rem;
-          font-size: 2rem;
-          color: #f59e0b;
-        }
-
-        .metrics p {
-          margin: 0;
-          color: #b5c5db;
-          font-size: 0.9rem;
-          line-height: 1.45;
-        }
-
-        .advanced-grid {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 1rem;
-        }
-
-        .advanced p {
-          margin: 0;
-          color: #b5c5db;
-          font-size: 0.95rem;
-          line-height: 1.55;
-        }
-
-        .faq-list {
-          display: grid;
-          gap: 0.75rem;
-          max-width: 800px;
-        }
-
-        details {
-          border: 1px solid rgba(143, 165, 192, 0.22);
-          border-radius: 14px;
-          padding: 1rem;
-          background: rgba(9, 23, 40, 0.55);
-        }
-
-        summary {
-          cursor: pointer;
-          font-weight: 600;
-          font-size: 1rem;
-          color: #ecf2ff;
-          list-style: none;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        summary::-webkit-details-marker { display: none; }
-
-        summary::after {
-          content: '+';
-          font-size: 1.4rem;
-          color: #8de8d5;
-          font-weight: 300;
-        }
-
-        details[open] summary::after {
-          content: '−';
-        }
-
-        details p {
-          margin: 0.75rem 0 0;
-          color: #b5c5db;
-          font-size: 0.95rem;
-          line-height: 1.65;
-        }
-
-        .not-sure {
-          margin-top: 3.5rem;
-          border: 1px solid rgba(143, 165, 192, 0.25);
-          border-radius: 20px;
-          padding: 2.5rem;
-          background: linear-gradient(150deg, rgba(6, 78, 59, 0.55), rgba(9, 23, 40, 0.62));
-          text-align: center;
-        }
-
-        .not-sure h2 {
-          margin: 0;
-          font-size: clamp(1.4rem, 3.5vw, 2rem);
-        }
-
-        .not-sure p {
-          margin: 0.75rem 0 1.25rem;
-          color: #b5c5db;
-          font-size: 1rem;
-          max-width: 50ch;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .btn {
-          border: 1px solid rgba(143, 165, 192, 0.4);
-          color: #ecf2ff;
-          text-decoration: none;
-          border-radius: 12px;
-          padding: 0.7rem 1rem;
-          background: rgba(13, 29, 49, 0.65);
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 600;
-          font-size: 0.95rem;
-          text-align: center;
-          cursor: pointer;
-          transition: opacity 150ms;
-        }
-
-        .btn.primary {
-          background: linear-gradient(135deg, #f97316, #f59e0b);
-          color: #1a1301;
-          border-color: transparent;
-          font-weight: 700;
-        }
-
-        .btn:hover {
-          opacity: 0.85;
-        }
-
-        @media (max-width: 1100px) {
-          .feature-grid { grid-template-columns: 1fr; }
-          .metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-          .advanced-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        }
-
-        @media (max-width: 760px) {
-          .site { width: min(1160px, calc(100% - 1.4rem)); }
-          .top-nav { border-radius: 16px; flex-wrap: wrap; }
-          .nav-links { display: none; }
-          .hero { padding: 1.35rem; }
-          .section h2 { max-width: none; }
-          .feature-grid,
-          .metrics-grid,
-          .advanced-grid { grid-template-columns: 1fr; }
-        }
-      `}</style>
-    </main>
+        <section className="final reveal">
+          <h2>Ready to see it <em>in action?</em></h2>
+          <p>Connect one repo and two vendors to draft your first ticket in minutes. Free forever on one repo.</p>
+          <div className="hero-cta">
+            {flags.waitlist ? <WaitlistForm /> : <a href="/pricing" className="btn btn-primary btn-lg">Start watching free</a>}
+            <a href="#" className="btn btn-lg">Book a demo</a>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
   )
 }
