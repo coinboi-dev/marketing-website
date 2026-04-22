@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import WaitlistForm from '@/components/WaitlistForm'
 import { flags } from '@/lib/flags'
 import { getPostBySlug, getRelatedPosts } from '@/lib/posts'
+export const runtime = 'edge';
 
 interface Props {
   params: Promise<{ slug: string }>

@@ -1,6 +1,7 @@
 import WaitlistForm from '@/components/WaitlistForm'
 import { flags } from '@/lib/flags'
 import { posts } from '@/lib/posts'
+export const runtime = 'edge';
 
 export const metadata = {
   title: 'The Pulse Blog | API Monitoring, AI Deprecations, and Platform Stability',
