@@ -37,7 +37,7 @@ export default function WaitlistForm() {
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 420 }}>
       <label htmlFor="waitlist-email" style={{ fontWeight: 600, fontSize: '0.95rem' }}>
-        Get early access
+        Start Your AI API Deprecation Audit (Free)
       </label>
       <div style={{ display: 'flex', gap: 8 }}>
         <input
@@ -71,7 +71,7 @@ export default function WaitlistForm() {
             opacity: status === 'loading' ? 0.7 : 1,
           }}
         >
-          {status === 'loading' ? 'Joining…' : status === 'success' ? 'Joined!' : 'Join waitlist'}
+          {status === 'loading' ? 'Submitting…' : status === 'success' ? 'You\'re on the list!' : 'Start Free Audit'}
         </button>
       </div>
       {message && (
