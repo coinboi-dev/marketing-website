@@ -22,7 +22,7 @@ export default function Footer() {
           </div>
           <div className="foot-col">
             <h5>Company</h5>
-            <a href="#">About</a>
+            <a href="/about">About</a>
             <a href="/blog">Blog</a>
             <a href="#">Security</a>
             <a href="#">Careers</a>
@@ -36,8 +36,8 @@ export default function Footer() {
           </div>
           <div className="foot-col">
             <h5>Legal</h5>
-            <a href="#">Terms</a>
-            <a href="#">Privacy</a>
+            <a href="/terms">Terms</a>
+            <a href="/privacy">Privacy</a>
             <a href="#">Cookie policy</a>
           </div>
         </div>

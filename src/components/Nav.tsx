@@ -26,10 +26,12 @@ export default function Nav() {
           <span className="brand-name">Vendor Pulse</span>
         </a>
         <ul>
+          <li><a href="/about">About</a></li>
           <li><a href="/features">Features</a></li>
           <li><a href="/pricing">Pricing</a></li>
           <li><a href="/integrations">Integrations</a></li>
           <li><a href="/blog">Blog</a></li>
+          <li><a href="/changelog">Changelog</a></li>
           <li><a href="/deprecation-audit">Audit</a></li>
         </ul>
         <div className="cta-row">
